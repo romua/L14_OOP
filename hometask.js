@@ -295,7 +295,7 @@ function test() {
     testCasino2.machines[0].NNN = [2,2,1];
     testCasino2.machines[0]._playGame(200);
     console.log(testCasino2.machines[0]);
-    console.log('**********************************************************************************');
+    console.log('***********************************************************************************');
 }
 
 test();
