@@ -36,7 +36,7 @@ function Casino(numberOfMachines, initialMoney) {
         for (var j = 0; j < self.machines.length; j++) {
             totalAmountOfMoney += self.machines[j]._initialMoney;
         }
-        return totalAmountOfMoney;
+        return Math.ceil(totalAmountOfMoney);
     }
 
     this._getTotalNumberOfMachines = function () {
@@ -59,7 +59,7 @@ function Casino(numberOfMachines, initialMoney) {
             }
         }
         return {richMachineMoney: richestMachine, richMachineIndex: richestMachineIndex};
-    }
+    };
 
     this._getHighestId = function () {
         var highestId = -Infinity;
@@ -70,7 +70,7 @@ function Casino(numberOfMachines, initialMoney) {
         }
         console.log('highest id: ' + highestId)
         return highestId;
-    }
+    };
 
 
     this.addNewSlotMachine = function () {
@@ -82,7 +82,7 @@ function Casino(numberOfMachines, initialMoney) {
         console.log("richest machine index:" + richestMachineIndex);
         self.machines.push(newSlotMachine);
         self.machines[richestMachineIndex]._initialMoney = _initialAmountOfMoneyForNewSlotMachine;
-    }
+    };
 
     this._spreadMoney = function (amount) {
         var amountForOneMachine = amount / this._getTotalNumberOfMachines();
@@ -90,7 +90,7 @@ function Casino(numberOfMachines, initialMoney) {
             self.machines[i]._initialMoney += amountForOneMachine;
         }
         console.log('$+for machines: ' + amountForOneMachine);
-    }
+    };
     this._removeMachineById = function (id) {
         var moneyInDevaredMachine = 0;
         var isGoodId = false;
@@ -112,7 +112,7 @@ function Casino(numberOfMachines, initialMoney) {
     this._showAllMachines = function () {
         console.log('Machines in casino:\n');
         for (var i = 0; i < self.machines.length; i++) {
-            console.log(self.machines[i]._initialMoney);
+            console.log(self.machines[i]);
         }
     }
 
@@ -131,7 +131,7 @@ function Casino(numberOfMachines, initialMoney) {
             tempArr.sort(function (a, b) {
                 return b._initialMoney - a._initialMoney;
             });
-            console.log(tempArr);
+            //console.log(tempArr);
             for (var i = 0; i < tempArr.length; i++) {
                 if (takenAmount > tempArr[i]._initialMoney) {
                     takenAmount -= tempArr[i]._initialMoney;
@@ -146,7 +146,7 @@ function Casino(numberOfMachines, initialMoney) {
                     break;
             }
         }
-        console.log(takenAmount);
+        //console.log(takenAmount);
         return amount;
     }
 }
@@ -156,7 +156,7 @@ function SlothMachine(initialMoney) {
     this._id = null;
     this._initialMoney = initialMoney;
     this._isLucky = false;
-    this.NNN = [7,7,7]; //if you want to test assign this number
+    this.NNN = null; //if you want to test assign this number, if you want random number set it to null;
     this._getOutMoney = function (amount) {
         this._initialMoney -= amount;
     }
@@ -177,10 +177,11 @@ function SlothMachine(initialMoney) {
         var gameNumber = [];
         gameNumber = [number1, number2, number3];
         return gameNumber;
-    }
+    };
     this._playGame = function (inputMoney) {
         if(inputMoney >=0 && typeof inputMoney === 'number'){
             var prizeMoney = 0;
+            var moneyToTakeFromCasino =0;
             self._putInMoney(inputMoney);
             var newGameNumber = this.NNN || self._getRandomNNN();
             if(self._isLucky){
@@ -195,12 +196,23 @@ function SlothMachine(initialMoney) {
                 if (newGameNumber[0] === newGameNumber[1] && newGameNumber[0] === newGameNumber[2]) {//3 digits similar but not equal 7
                     console.log('Wow! 3 digits similar');
                     prizeMoney = inputMoney * 5;
-                    self._getOutMoney(prizeMoney);
+                    if(prizeMoney>self._initialMoney){
+                        moneyToTakeFromCasino = prizeMoney-self._initialMoney;
+                        self._initialMoney=0;
+                        console.log('Your win is '+prizeMoney+' it`s bigger than money in this SlothMachine. Pls take rest money=' + moneyToTakeFromCasino+
+                            ' from Casino(._takeMoneyFromCasino('+moneyToTakeFromCasino+'))');
+                    } else {self._getOutMoney(prizeMoney);}
+
                 } else {//any two digits similar
                     if (newGameNumber[0] === newGameNumber[1] || newGameNumber[0] === newGameNumber[2] || newGameNumber[1] === newGameNumber[2]) {
                         console.log('Grats! two similar numbers!');
                         prizeMoney = inputMoney * 2;
-                        self._getOutMoney(prizeMoney);
+                        if(prizeMoney>self._initialMoney){
+                            moneyToTakeFromCasino = prizeMoney-self._initialMoney;
+                            self._initialMoney=0;
+                            console.log('Your win is '+prizeMoney+' it`s bigger than money in this SlothMachine. Pls take rest money=' + moneyToTakeFromCasino+
+                                ' from Casino(._takeMoneyFromCasino('+moneyToTakeFromCasino+'))');
+                        } else {self._getOutMoney(prizeMoney);}
                     }
                 }
             }
@@ -212,18 +224,69 @@ function SlothMachine(initialMoney) {
     // console.log(this);
 }
 
-var casino = new Casino(4, 20000);
+//var casino = new Casino(4, 20000);
 //var casino1 = new Casino(3, 213);
 //console.log(casino._getTotalAmountOfMoney());
 //console.log(casino._getTotalNumberOfMachines());
 //console.log(casino._getRichestMachine());
-casino.addNewSlotMachine();
-casino._showAllMachines();
-casino._removeMachineById(4);
-casino._showAllMachines();
+// casino.addNewSlotMachine();
+// casino._showAllMachines();
+// casino._removeMachineById(4);
+// casino._showAllMachines();
 //console.log(casino._takeMoneyFromCasino(12000));
-//casino._showAllMachines();
-casino.machines[1]._playGame(300);
-casino._showAllMachines();
+// //casino._showAllMachines();
+// casino.machines[1]._playGame(300);
+// casino._showAllMachines();
 
+function test() {
+    var testCasino = new Casino(2, 12345);
+    var testCasino1 = new Casino(1, 1000);
+    var testCasino2 = new Casino(1, 1000);
+    testCasino._showAllMachines();
+    console.log(testCasino._getTotalAmountOfMoney());
+    console.log(testCasino._getTotalNumberOfMachines());
+    console.log('**********************************************************************************');
+    testCasino.addNewSlotMachine();
+    testCasino._showAllMachines();
+    console.log('**********************************************************************************');
+    testCasino._removeMachineById(234); // id out of range
+    console.log('**********************************************************************************');
+    testCasino._removeMachineById(1);
+    testCasino._showAllMachines();
+    console.log('**********************************************************************************');
+    testCasino.addNewSlotMachine();
+    testCasino._showAllMachines();
+    console.log('**********************************************************************************');
+    testCasino._takeMoneyFromCasino(10000);
+    testCasino._showAllMachines();
+    console.log('**********************************************************************************');
+    console.log(testCasino.machines[2]);//we will use this SlothMachine
+    //set number to 777 and test
+    testCasino.machines[2].NNN = [7,7,7];
+    testCasino.machines[2]._playGame(300);//you put 300(now in slothMachine2644.5)
+    console.log(testCasino.machines[2]);
+    console.log('**********************************************************************************');
+    //set number to 777 but machine is lucky and test
+    testCasino.machines[2].NNN = [7,7,7];
+    testCasino.machines[2]._isLucky = true;
+    testCasino.machines[2]._playGame(300);//you put 300(now in slothMachine2644.5)
+    console.log(testCasino.machines[2]); // expect jackpot but machine is lucky
+    console.log('**********************************************************************************');
+    //set number to AAA and test
+    testCasino1.machines[0]._isLucky = false;
+    testCasino1.machines[0].NNN = [2,2,2];
+    testCasino1.machines[0]._playGame(2000);
+    console.log(testCasino1.machines[0]);
+    console.log('**********************************************************************************');
+    //set number to AAC and test
+    testCasino2.machines[0]._isLucky = false;
+    testCasino2.machines[0].NNN = [2,2,1];
+    testCasino2.machines[0]._playGame(200);
+    console.log(testCasino2.machines[0]);
+    console.log('**********************************************************************************');
+}
 
+test();
+
+module.exports = Casino;
+module.exports = SlothMachine;
