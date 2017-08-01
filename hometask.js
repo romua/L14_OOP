@@ -1,23 +1,25 @@
 function Casino(numberOfMachines, initialMoney) {
     var self = this;
     this.machines = [];
-
+    //get random number
     function getRandomInt(min, max) {
         min = Math.ceil(min);
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
     }
 
-    if ((numberOfMachines > 0) && (initialMoney > 0)) {
+    if ((numberOfMachines > 0) && (initialMoney > 0) && (typeof numberOfMachines === 'number') && (typeof initialMoney === 'number')) {
         var _initialMoneyInMachines = Math.floor(initialMoney / numberOfMachines);
         var _moneyBonusForFirstMachine = (initialMoney / numberOfMachines) - _initialMoneyInMachines;
         var _indexOfLuckyMachine = getRandomInt(0, numberOfMachines);
 
         console.log("Lucky machine with index:" + _indexOfLuckyMachine);
     } else {
-        _initialMoneyInMachines = 10;
-        _moneyBonusForFirstMachine = (initialMoney / numberOfMachines) - _initialMoneyInMachines;
-        _indexOfLuckyMachine = Math.floor((Math.random() * numberOfMachines) + 1);
+        console.log('Oh. I see you drunk. Lemme assign vars for you');
+        numberOfMachines = 3;
+        var _initialMoneyInMachines = Math.floor(initialMoney / numberOfMachines);
+        var _moneyBonusForFirstMachine = (initialMoney / numberOfMachines) - _initialMoneyInMachines;
+        var _indexOfLuckyMachine = getRandomInt(0, numberOfMachines);
     }
 
     self.machines[0] = new SlothMachine(_initialMoneyInMachines + _moneyBonusForFirstMachine);
@@ -154,14 +156,24 @@ function Casino(numberOfMachines, initialMoney) {
 function SlothMachine(initialMoney) {
     var self = this;
     this._id = null;
-    this._initialMoney = initialMoney;
+    if((typeof initialMoney === 'number') && (initialMoney => 0)) {
+        this._initialMoney = initialMoney;
+    } else {
+        console.log('Oh. I see you drunk. Lemme assign vars for you');
+        this._initialMoney = 2000;
+
+    }
     this._isLucky = false;
     this.NNN = null; //if you want to test assign this number, if you want random number set it to null;
     this._getOutMoney = function (amount) {
-        this._initialMoney -= amount;
+        if((typeof amount === 'number') && (amount =>0)) {
+            this._initialMoney -= amount;
+        }
     }
     this._putInMoney = function (amount) {
-        this._initialMoney += amount;
+        if((typeof amount === 'number') && (amount =>0)) {
+            this._initialMoney += amount;
+        }
     }
 
     function getRandomInt(min, max) {
@@ -239,7 +251,7 @@ function SlothMachine(initialMoney) {
 // casino._showAllMachines();
 
 function test() {
-    var testCasino = new Casino(2, 12345);
+    var testCasino = new Casino(2, 20000);
     var testCasino1 = new Casino(1, 1000);
     var testCasino2 = new Casino(1, 1000);
     testCasino._showAllMachines();
